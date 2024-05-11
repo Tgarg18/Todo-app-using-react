@@ -22,10 +22,18 @@ function Home() {
             setTodo({
                 title: "",
                 editable: false,
-                completed: false
+                completed: false,
+                cancel: false,
+                dateAndTime: new Date().toLocaleString()
             })
             toast.success("Todo added successfully")
         }
+    }
+
+    const saveToLocalStorage = () => {
+        localStorage.setItem("todolist", JSON.stringify(todolist))
+        localStorage.setItem("completedlist", JSON.stringify(completedList))
+        console.log(localStorage.getItem("todolist"));
     }
 
     return (
@@ -33,10 +41,13 @@ function Home() {
             <Navbar />
             <div className="container mx-auto w-3/4 mt-5 border border-black px-5 pb-3 h-[88vh] shadow-2xl overflow-x-hidden overflow-y-scroll relative">
                 <div className='flex gap-2 justify-evenly sticky top-0 bg-white pt-3'>
-                    <input type="text" name="todo" id="1" placeholder='Enter the todo...' value={todo.title} onChange={(e) => setTodo({ ...todo, title: e.target.value })} className='w-1/2 py-2 px-3 rounded-xl shadow-2xl' />
-                    <button onClick={() => handleAddTodo()} className='w-1/6 shadow-2xl hover:bg-violet-400 bg-violet-500 hover:font-semibold text-white rounded-xl py-2 px-3'>Add</button>
+                    <input type="text" name="todo" id="1" placeholder='Enter the todo...' value={todo.title} onChange={(e) => setTodo({ ...todo, title: e.target.value })} className='w-1/2 py-2 px-3 rounded-xl shadow-2xl border border-gray-500' />
+                    <button onClick={() => {
+                        handleAddTodo()
+                        saveToLocalStorage()
+                    }} className='w-1/6 shadow-2xl hover:bg-violet-400 bg-violet-500 hover:font-semibold text-white rounded-xl py-2 px-3'>Add</button>
                 </div>
-                <div className="todoContainer mt-5 border-t">
+                <div className="todoContainer mt-5 border-t-2">
                     {
                         todolist.map((item, index) => {
                             return (
@@ -46,9 +57,15 @@ function Home() {
                                             <FormGroup>
                                                 {
                                                     (item.cancel) ?
-                                                        <FormControlLabel control={<Checkbox defaultChecked />} onChange={() => setTodolist(todolist.map((todo) => (todo === item) ? { ...todo, cancel: !todo.cancel } : todo))} label="" />
+                                                        <FormControlLabel control={<Checkbox defaultChecked />} onChange={() => {
+                                                            setTodolist(todolist.map((todo) => (todo === item) ? { ...todo, cancel: !todo.cancel } : todo))
+                                                            saveToLocalStorage()
+                                                        }} label="" />
                                                         :
-                                                        <FormControlLabel control={<Checkbox />} onChange={() => setTodolist(todolist.map((todo) => (todo === item) ? { ...todo, cancel: !todo.cancel } : todo))} label="" />
+                                                        <FormControlLabel control={<Checkbox />} onChange={() => {
+                                                            setTodolist(todolist.map((todo) => (todo === item) ? { ...todo, cancel: !todo.cancel } : todo))
+                                                            saveToLocalStorage()
+                                                        }} label="" />
                                                 }
                                             </FormGroup>
                                             :
@@ -73,6 +90,7 @@ function Home() {
                                                     else {
                                                         setTodolist(todolist.map((todo) => (todo === item) ? { ...todo, editable: false, completed: true } : todo))
                                                         toast.success("Todo updated successfully")
+                                                        saveToLocalStorage()
                                                     }
                                                 }}>Save Changes</button>
                                                 :
@@ -87,17 +105,19 @@ function Home() {
                                                 :
                                                 <button className='' onClick={() => {
                                                     setTodolist(todolist.filter((todo) => todo !== item))
+                                                    saveToLocalStorage()
                                                     toast.success("Todo deleted successfully")
                                                 }}><DeleteIcon fontSize='large' className='text-red-500' /></button>
                                         }
                                         <button onClick={() => {
                                             setCompletedList([...completedList, item])
                                             setTodolist(todolist.filter((todo) => todo !== item))
+                                            saveToLocalStorage()
                                             toast.success("Todo moved to completed successfully")
                                         }}><DoneIcon fontSize='large' className='text-green-500' /></button>
                                     </div>
                                     {
-                                        (item.editable) ?
+                                        (item.editable == true) ?
                                             null
                                             :
                                             <div className='text-gray-500 text-xs'>

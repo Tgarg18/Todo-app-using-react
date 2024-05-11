@@ -7,6 +7,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
+
   const [todo, setTodo] = useState({
     title: "",
     editable: false,
@@ -14,10 +15,19 @@ function App() {
     cancel: false,
     dateAndTime: new Date().toLocaleString()
   })
-  const [todolist, setTodolist] = useState([])
-  const [completedList, setCompletedList] = useState([])
+
+  const [todolist, setTodolist] = useState(localStorage.getItem("todolist") ? JSON.parse(localStorage.getItem("todolist")) : [])
+
+  const [completedList, setCompletedList] = useState(localStorage.getItem("completedlist") ? JSON.parse(localStorage.getItem("completedlist")) : [])
+
   return (
     <>
+      {
+        console.log(todolist)
+      }
+      {
+        console.log(completedList)
+      }
       <todoListContext.Provider value={{ todo, setTodo, todolist, setTodolist, completedList, setCompletedList }}>
         <BrowserRouter>
           <Routes>
