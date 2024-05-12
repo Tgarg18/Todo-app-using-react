@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import Navbar from './Navbar'
 import todoListContext from '../context/todoListContext'
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -7,7 +7,17 @@ import { toast } from 'react-toastify';
 
 const Completed = () => {
 
-    const { todo, setTodo, todolist, setTodolist, completedList, setCompletedList } = useContext(todoListContext)
+    const { todolist, completedList, setCompletedList } = useContext(todoListContext)
+    
+    const saveToLocalStorage = () => {
+        localStorage.setItem("todolist", JSON.stringify(todolist))
+        localStorage.setItem("completedlist", JSON.stringify(completedList))
+        console.log(localStorage.getItem("todolist"));
+    }
+
+    useEffect(() => {
+        saveToLocalStorage()
+    }, [todolist, completedList])
 
     return (
         <div className=''>
@@ -23,6 +33,7 @@ const Completed = () => {
                                         <div className='w-3/4'>{item.title}</div>
                                         <button className='' onClick={() => {
                                             setCompletedList(completedList.filter((todo) => todo !== item))
+                                            saveToLocalStorage()
                                             toast.success("Todo removed successfully")
                                         }}><DeleteIcon fontSize='large' className='text-red-500' /> </button>
                                     </div>

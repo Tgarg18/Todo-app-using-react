@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import todoListContext from '../context/todoListContext'
 import Navbar from './Navbar'
 import FormGroup from '@mui/material/FormGroup';
@@ -7,6 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Checkbox from '@mui/material/Checkbox';
 import DoneIcon from '@mui/icons-material/Done';
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import { toast } from 'react-toastify';
 
 function Home() {
@@ -36,6 +37,10 @@ function Home() {
         console.log(localStorage.getItem("todolist"));
     }
 
+    useEffect(() => {
+        saveToLocalStorage()
+    }, [todolist, completedList])
+
     return (
         <>
             <Navbar />
@@ -49,84 +54,90 @@ function Home() {
                 </div>
                 <div className="todoContainer mt-5 border-t-2">
                     {
-                        todolist.map((item, index) => {
-                            return (
-                                <div className={`todo flex w-[90%] mx-auto pl-5 items-center border-t border-black py-2 ${(item.cancel) ? "bg-slate-100" : ""}`} key={index}>
-                                    {
-                                        (item.editable == false) ?
-                                            <FormGroup>
-                                                {
-                                                    (item.cancel) ?
-                                                        <FormControlLabel control={<Checkbox defaultChecked />} onChange={() => {
-                                                            setTodolist(todolist.map((todo) => (todo === item) ? { ...todo, cancel: !todo.cancel } : todo))
-                                                            saveToLocalStorage()
-                                                        }} label="" />
-                                                        :
-                                                        <FormControlLabel control={<Checkbox />} onChange={() => {
-                                                            setTodolist(todolist.map((todo) => (todo === item) ? { ...todo, cancel: !todo.cancel } : todo))
-                                                            saveToLocalStorage()
-                                                        }} label="" />
-                                                }
-                                            </FormGroup>
-                                            :
-                                            null
-                                    }
-                                    {
-                                        (item.editable) ?
-                                            <div className='w-4/5 py-3'>
-                                                <div className='font-bold'>Edit Todo</div>
-                                                <input type="text" name="todo" placeholder='Enter the todo...' value={item.title} onChange={(e) => setTodolist(todolist.map((todo) => (todo === item) ? { ...todo, title: e.target.value } : todo))} className='w-full py-2 px-3 rounded-xl' />
-                                            </div>
-                                            :
-                                            <div className={`w-4/5 ${(item.cancel) ? "line-through" : ""}`}>{item.title}</div>
-                                    }
-                                    <div className='button flex gap-3'>
+                        (todolist.length == 0) ?
+                            <div className='py-40 flex flex-col gap-2 items-center justify-center'>
+                                <PlaylistAddIcon fontSize='large' className='text-gray-400' />
+                                <h1 className='text-xl font-semibold text-gray-400 text-center'>No Todo!</h1>
+                            </div>
+                            :
+                            todolist.map((item, index) => {
+                                return (
+                                    <div className={`todo flex w-[90%] mx-auto pl-5 items-center border-t border-black py-2 ${(item.cancel) ? "bg-slate-100" : ""}`} key={index}>
+                                        {
+                                            (item.editable == false) ?
+                                                <FormGroup>
+                                                    {
+                                                        (item.cancel) ?
+                                                            <FormControlLabel control={<Checkbox defaultChecked />} onChange={() => {
+                                                                setTodolist(todolist.map((todo) => (todo === item) ? { ...todo, cancel: !todo.cancel } : todo))
+                                                                saveToLocalStorage()
+                                                            }} label="" />
+                                                            :
+                                                            <FormControlLabel control={<Checkbox />} onChange={() => {
+                                                                setTodolist(todolist.map((todo) => (todo === item) ? { ...todo, cancel: !todo.cancel } : todo))
+                                                                saveToLocalStorage()
+                                                            }} label="" />
+                                                    }
+                                                </FormGroup>
+                                                :
+                                                null
+                                        }
                                         {
                                             (item.editable) ?
-                                                <button className='' onClick={() => {
-                                                    if (item.title === "") {
-                                                        toast.error("Todo cannot be an empty text")
-                                                    }
-                                                    else {
-                                                        setTodolist(todolist.map((todo) => (todo === item) ? { ...todo, editable: false, completed: true } : todo))
-                                                        toast.success("Todo updated successfully")
-                                                        saveToLocalStorage()
-                                                    }
-                                                }}>Save Changes</button>
+                                                <div className='w-4/5 py-3'>
+                                                    <div className='font-bold'>Edit Todo</div>
+                                                    <input type="text" name="todo" placeholder='Enter the todo...' value={item.title} onChange={(e) => setTodolist(todolist.map((todo) => (todo === item) ? { ...todo, title: e.target.value } : todo))} className='w-full py-2 px-3 rounded-xl' />
+                                                </div>
                                                 :
-                                                (item.cancel) ?
+                                                <div className={`w-4/5 ${(item.cancel) ? "line-through" : ""}`}>{item.title}</div>
+                                        }
+                                        <div className='button flex gap-3'>
+                                            {
+                                                (item.editable) ?
+                                                    <button className='' onClick={() => {
+                                                        if (item.title === "") {
+                                                            toast.error("Todo cannot be an empty text")
+                                                        }
+                                                        else {
+                                                            setTodolist(todolist.map((todo) => (todo === item) ? { ...todo, editable: false, completed: true } : todo))
+                                                            toast.success("Todo updated successfully")
+                                                            saveToLocalStorage()
+                                                        }
+                                                    }}>Save Changes</button>
+                                                    :
+                                                    (item.cancel) ?
+                                                        null
+                                                        :
+                                                        <button className='' onClick={() => setTodolist(todolist.map((todo) => (todo === item) ? { ...todo, editable: true } : todo))}><EditIcon fontSize='large' /></button>
+                                            }
+                                            {
+                                                (item.editable) ?
                                                     null
                                                     :
-                                                    <button className='' onClick={() => setTodolist(todolist.map((todo) => (todo === item) ? { ...todo, editable: true } : todo))}><EditIcon fontSize='large' /></button>
-                                        }
+                                                    <button className='' onClick={() => {
+                                                        setTodolist(todolist.filter((todo) => todo !== item))
+                                                        saveToLocalStorage()
+                                                        toast.success("Todo deleted successfully")
+                                                    }}><DeleteIcon fontSize='large' className='text-red-500' /></button>
+                                            }
+                                            <button onClick={() => {
+                                                setCompletedList([...completedList, item])
+                                                setTodolist(todolist.filter((todo) => todo !== item))
+                                                saveToLocalStorage()
+                                                toast.success("Todo moved to completed successfully")
+                                            }}><DoneIcon fontSize='large' className='text-green-500' /></button>
+                                        </div>
                                         {
-                                            (item.editable) ?
+                                            (item.editable == true) ?
                                                 null
                                                 :
-                                                <button className='' onClick={() => {
-                                                    setTodolist(todolist.filter((todo) => todo !== item))
-                                                    saveToLocalStorage()
-                                                    toast.success("Todo deleted successfully")
-                                                }}><DeleteIcon fontSize='large' className='text-red-500' /></button>
+                                                <div className='text-gray-500 text-xs'>
+                                                    {item.dateAndTime}
+                                                </div>
                                         }
-                                        <button onClick={() => {
-                                            setCompletedList([...completedList, item])
-                                            setTodolist(todolist.filter((todo) => todo !== item))
-                                            saveToLocalStorage()
-                                            toast.success("Todo moved to completed successfully")
-                                        }}><DoneIcon fontSize='large' className='text-green-500' /></button>
                                     </div>
-                                    {
-                                        (item.editable == true) ?
-                                            null
-                                            :
-                                            <div className='text-gray-500 text-xs'>
-                                                {item.dateAndTime}
-                                            </div>
-                                    }
-                                </div>
-                            )
-                        })
+                                )
+                            })
                     }
                 </div>
             </div>
