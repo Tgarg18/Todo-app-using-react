@@ -39,16 +39,48 @@ A simple and efficient TODO application built with React. This app allows users 
     git clone https://github.com/Tgarg18/Todo-app-using-react.git
     ```
 
-2. Installing dependencies:
+2. Navigating to the project directory:
+
+    ```
+    cd todo-app-using-react
+    ```
+
+3. Installing dependencies:
     
-    Open the terminal in the root directory
+    Open the terminal in the project directory
     ```bash
     npm i
     ```
 
-3. Starting the project:
+4. Starting the project:
 
-    Open the terminal in the root directory
+    Open the terminal in the project directory
     ```bash
     npm run dev
     ```
+
+## Contribution
+
+If you would like to contribute to this project, please follow these steps:
+
+1. **Fork the repository**.
+
+2. **Create a new branch**:
+
+    ```bash
+    git checkout -b feature-name
+    ```
+
+3. **Make your changes and commit them**:
+
+    ```bash
+    git commit -m 'Add some feature'
+    ```
+
+4. **Push to the branch**:
+
+    ```bash
+    git push origin feature-name
+    ```
+
+5. **Open a pull request**.
