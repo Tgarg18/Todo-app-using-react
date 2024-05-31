@@ -13,11 +13,16 @@ A simple and efficient TODO application built with React. This app allows users 
 - **Cancel/Uncancel TODO:** Cancel or uncancel a task without deleting 
 
 ## Technologies Used
+
 - Vite
 - React.js
 - Tailwind CSS
 - Local Storage
 - React-Router-DOM
+
+## Deployment Platform
+
+**Vercel**: Deployed using  https://vercel.com
 
 ## Getting Started
 
