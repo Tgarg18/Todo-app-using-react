@@ -34,7 +34,7 @@ A simple and efficient TODO application built with React. This app allows users 
 
 1. Cloning the Repository:
     
-    Open the terminal in the a folder
+    Open terminal in the folder
     ```bash
     git clone https://github.com/Tgarg18/Todo-app-using-react.git
     ```
